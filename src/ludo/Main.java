@@ -1,3 +1,9 @@
+package ludo;
+
+import ludo.config.GameConfig;
+import ludo.managers.GameManager;
+import ludo.managers.ScoreManager;
+
 import java.util.ArrayList;
 import java.util.List;
 

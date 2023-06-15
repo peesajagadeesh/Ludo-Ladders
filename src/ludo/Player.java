@@ -1,3 +1,8 @@
+package ludo;
+
+import ludo.managers.PawnManager;
+import ludo.managers.ScoreManager;
+
 import java.util.ArrayList;
 import java.util.List;
 

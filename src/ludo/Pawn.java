@@ -1,3 +1,5 @@
+package ludo;
+
 public class Pawn {
     private int playerId;
     private int position;

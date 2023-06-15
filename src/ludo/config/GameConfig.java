@@ -1,3 +1,4 @@
+package ludo.config;
 
 public class GameConfig {
     public static final int NUM_PLAYERS = 2;

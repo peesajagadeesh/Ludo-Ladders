@@ -1,4 +1,6 @@
+package ludo;
 
+import ludo.Interfaces.DiceInterface;
 
 public class Dice implements DiceInterface {
     private final int  numSides;
