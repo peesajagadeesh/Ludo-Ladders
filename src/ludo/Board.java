@@ -7,6 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The Board class represents the game board for the Ludo-Ladders game. It manages the size of the board, safe positions,
+ * snake positions, and ladder positions. The class provides methods to interact with the board and handle snake and
+ * ladder movements.
+ */
 public class Board implements BoardInterface {
     public static final int BOARD_SIZE = 20;
     public static final int HOME_POSITION = 20;
@@ -17,17 +22,24 @@ public class Board implements BoardInterface {
     private Map<Integer, Integer> ladderPositions;  // Map bottom position to top position
 
 
+    /**
+     * Constructs a Board object with the specified size.
+     *
+     * @param size the size of the board
+     */
     public Board(int size) {
         this.size = size;
         this.safePositions = new ArrayList<>();
-        initializeSafePositions();
-        //this.players = players;
         this.snakePositions = new HashMap<>();
         this.ladderPositions = new HashMap<>();
+        initializeSafePositions();
         initializeSnakesAndLadders();
     }
 
 
+    /**
+     * Initializes the safe positions on the board.
+     */
     private void initializeSafePositions() {
         // Add safe positions to the list
         safePositions.add(8);
@@ -35,6 +47,9 @@ public class Board implements BoardInterface {
         safePositions.add(18);
     }
 
+    /**
+     * Initializes the snake and ladder positions on the board.
+     */
     private void initializeSnakesAndLadders() {
         // Add snake positions
         snakePositions.put(17, 7);
@@ -47,22 +62,54 @@ public class Board implements BoardInterface {
         // ...
     }
 
+    /**
+     * Retrieves the tail position of a snake given its head position.
+     *
+     * @param headPosition the head position of the snake
+     * @return the tail position of the snake, or -1 if not found
+     */
     public int getTailPositionForSnake(int headPosition) {
         return snakePositions.getOrDefault(headPosition, -1);
     }
 
+    /**
+     * Retrieves the top position of a ladder given its bottom position.
+     *
+     * @param bottomPosition the bottom position of the ladder
+     * @return the top position of the ladder, or -1 if not found
+     */
     public int getTopPositionForLadder(int bottomPosition) {
         return ladderPositions.getOrDefault(bottomPosition, -1);
     }
 
+    /**
+     * Checks if a given position is a valid position on the board.
+     *
+     * @param position the position to check
+     * @return true if the position is valid, false otherwise
+     */
     public boolean isValidPosition(int position) {
         return position > 0 && position <= size;
     }
 
+    /**
+     * Checks if a given position is a safe position on the board.
+     *
+     * @param position the position to check
+     * @return true if the position is safe, false otherwise
+     */
     public boolean isSafePosition(int position) {
         return safePositions.contains(position);
     }
 
+    /**
+     * Checks if a given position is occupied by another player's pawn.
+     *
+     * @param position       the position to check
+     * @param currentPlayerId the ID of the current player
+     * @param players        the list of all players
+     * @return true if the position is occupied by another player's pawn, false otherwise
+     */
     public boolean isOccupiedByOtherPlayer(int position, int currentPlayerId, List<Player> players) {
         for (Player player : players) {
             if (player.getPlayerId() != currentPlayerId && player.getPawnsAtPosition(position).size() > 0) {
@@ -72,6 +119,14 @@ public class Board implements BoardInterface {
         return false;
     }
 
+    /**
+     * Retrieves the opponent player at a given position.
+     *
+     * @param position       the position to check
+     * @param currentPlayer  the current player
+     * @param players        the list of all players
+     * @return the opponent player at the position, or null if not found
+     */
     public Player getOpponentPlayerAtPosition(int position, Player currentPlayer, List<Player> players) {
         for (Player player : players) {
             if (player != currentPlayer && player.getPawnsAtPosition(position).size() > 0) {
@@ -81,6 +136,11 @@ public class Board implements BoardInterface {
         return null;
     }
 
+    /**
+     * Handles the movement of a pawn when it encounters a snake or ladder position.
+     *
+     * @param pawn the pawn to handle
+     */
     public void handleSnakeOrLadderPosition(Pawn pawn) {
         int newPosition = pawn.getPosition();
 
@@ -101,5 +161,4 @@ public class Board implements BoardInterface {
             }
         }
     }
-
 }
