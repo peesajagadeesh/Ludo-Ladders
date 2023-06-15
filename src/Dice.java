@@ -1,7 +1,7 @@
 
 
-public class Dice {
-    private int numSides;
+public class Dice implements DiceInterface {
+    private final int  numSides;
 
     public Dice(int numSides) {
         this.numSides = numSides;

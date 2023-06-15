@@ -3,22 +3,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Board {
+public class Board implements BoardInterface {
     public static final int BOARD_SIZE = 20;
     public static final int HOME_POSITION = 20;
     private int size;
     private List<Integer> safePositions;
-    private List<Player> players;
 
     private Map<Integer, Integer> snakePositions;   // Map head position to tail position
     private Map<Integer, Integer> ladderPositions;  // Map bottom position to top position
 
 
-    public Board(int size, List<Player> players) {
+    public Board(int size) {
         this.size = size;
         this.safePositions = new ArrayList<>();
         initializeSafePositions();
-        this.players = players;
+        //this.players = players;
         this.snakePositions = new HashMap<>();
         this.ladderPositions = new HashMap<>();
         initializeSnakesAndLadders();
@@ -60,29 +59,43 @@ public class Board {
         return safePositions.contains(position);
     }
 
-    public boolean isOccupiedByOtherPlayer(int position, int currentPlayerId) {
+    public boolean isOccupiedByOtherPlayer(int position, int currentPlayerId, List<Player> players) {
         for (Player player : players) {
-            if (player.getPlayerId() != currentPlayerId) {
-                List<Pawn> pawns = player.getPawnsAtPosition(position);
-                if (!pawns.isEmpty()) {
-                    return true;
-                }
+            if (player.getPlayerId() != currentPlayerId && player.getPawnsAtPosition(position).size() > 0) {
+                return true;
             }
         }
         return false;
     }
 
-    public Player getOpponentPlayerAtPosition(int position, Player currentPlayer) {
+    public Player getOpponentPlayerAtPosition(int position, Player currentPlayer, List<Player> players) {
         for (Player player : players) {
-            if (player != currentPlayer) {
-                List<Pawn> pawns = player.getPawns();
-                for (Pawn pawn : pawns) {
-                    if (pawn.getPosition() == position) {
-                        return player;
-                    }
-                }
+            if (player != currentPlayer && player.getPawnsAtPosition(position).size() > 0) {
+                return player;
             }
         }
         return null;
     }
+
+    public void handleSnakeOrLadderPosition(Pawn pawn) {
+        int newPosition = pawn.getPosition();
+
+        // Check if the new position is a snake position
+        int tailPosition = getTailPositionForSnake(newPosition);
+        if (tailPosition != -1) {
+            pawn.setPosition(tailPosition);
+            System.out.println("Pawn " + pawn.getPawnId() + " encountered a snake! Moved to position " + tailPosition);
+            return;
+        }
+
+        // Check if the new position is a ladder position
+        int topPosition = getTopPositionForLadder(newPosition);
+        if (topPosition != -1) {
+            if (topPosition <= Board.HOME_POSITION) {
+                pawn.setPosition(topPosition);
+                System.out.println("Pawn " + pawn.getPawnId() + " climbed a ladder! Moved to position " + topPosition);
+            }
+        }
+    }
+
 }
